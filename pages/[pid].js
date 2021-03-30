@@ -3,12 +3,18 @@ import Link from 'next/link';
 import path from 'path'
 
 function ProductPage(props) {
-  const {product: {title, description}} = props;
+  const {product} = props;
+
+  if (!product) {
+    return <p>Loading...</p>
+
+  }
+
   return (
     <>
       <Link href="/">Get 🔙</Link>
-      <h1>{title}</h1>
-      <p>{description}</p>
+      <h1>{product.title}</h1>
+      <p>{product.description}</p>
     </>
   )
 }
@@ -30,12 +36,10 @@ export async function getStaticProps(context) {
 export async function getStaticPaths() {
   return {
     paths: [
-      {params: {pid: 'p1'}},
-      {params: {pid: 'p2'}},
       {params: {pid: 'p3'}},
 
     ],
-    fallback: false,
+    fallback: true,
   }
 }
 
