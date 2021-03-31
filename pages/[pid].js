@@ -19,12 +19,18 @@ function ProductPage(props) {
   )
 }
 
-export async function getStaticProps(context) {
-  const {params: {pid: productId}} = context;
+async function getData() {
   const filePath = path.join(process.cwd(), 'data', 'dummy-backend.json');
   const jsonData = await fs.readFile(filePath);
-  const data = JSON.parse(jsonData);
+  return JSON.parse(jsonData);
+}
+
+export async function getStaticProps(context) {
+  const {params: {pid: productId}} = context;
+  const data = await getData();
   const product = data.products.find(product => product.id === productId)
+
+  if (!product) return {notFound: true}
 
   return {
     props: {
@@ -34,11 +40,14 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
-  return {
-    paths: [
-      {params: {pid: 'p3'}},
+  // NOTE: check for awaits in every async function if 'data' === undefined
+  const data = await getData();
+  const params = data.products.map(product => {
+    return {params: {pid: product.id}}
+  })
 
-    ],
+  return {
+    paths: params,
     fallback: true,
   }
 }
