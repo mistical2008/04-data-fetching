@@ -1,14 +1,14 @@
-const fs = require("fs").promises;
+import fs from "fs/promises";
 import path from "path";
 import Link from "next/link";
 
 function HomePage(props) {
-  const { products } = props;
+  const {products} = props;
   return (
     <ul>
       {products.map((product) => (
         <li key={product.id}>
-          <Link href={`/${product.id}`}>{product.title}</Link>
+          <Link href={`/products/${product.id}`}>{product.title}</Link>
         </li>
       ))}
     </ul>
@@ -30,7 +30,7 @@ export async function getStaticProps(context) {
   }
 
   if (data.products.length === 0) {
-    return { notFound: true };
+    return {notFound: true};
   }
 
   return {
